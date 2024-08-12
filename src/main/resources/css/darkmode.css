@@ -1,0 +1,66 @@
+.list-view {
+    -fx-background-color: #707070;
+}
+
+
+#sidebar {
+    -fx-border-width: 0;
+}
+
+/* Sets main colors */
+#VRouteDirections, #routeFrom, #routeTo, #POIButton, #searchField, #scaleBarPane {
+    -fx-background-color: #525252;
+}
+
+#sidebar {
+    -fx-background-color: #2d2d2d;
+}
+
+#routePlannerLabel {
+    -fx-text-fill: #d4d4d4;
+}
+
+#routeFrom {
+    -fx-text-fill: #d4d4d4;
+}
+
+#routeTo {
+    -fx-text-fill: #d4d4d4;
+}
+
+#comboBoxTransport, .list-cell {
+    -fx-background-color: #707070;
+    -fx-text-fill: #d4d4d4;
+    -fx-font-weight: bold
+}
+
+#planRouteButton {
+    -fx-background-color: #707070;
+    -fx-text-fill: #d4d4d4;
+    -fx-font-weight: bold;
+}
+
+#planRouteButton:hover {
+    -fx-background-color: #8f8f8f;
+}
+
+#planRouteButton:pressed {
+    -fx-background-color: #707070;
+}
+
+
+#directionsLabel, #travelDistance, #travelTime, #POIButton, #searchField {
+    -fx-text-fill: #d4d4d4;
+}
+
+#POIButton:hover {
+    -fx-background-color: #8f8f8f;
+}
+
+#POIButton:pressed {
+    -fx-background-color: #525252;
+}
+
+#scalebarLabel, #closestHighwayLabel, #mouseCoordinatesLabel {
+    -fx-text-fill: #d4d4d4;
+}

@@ -1,0 +1,56 @@
+#sidebar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: lightgrey;
+    -fx-border-width: 0px 1px 0px 0px;
+}
+
+#VRouteDirections {
+    -fx-background-color: #e8e8e8;
+    -fx-text-overrun: scroll;
+}
+
+#directionsVBox {
+    -fx-padding: 15px;
+}
+
+#directionsScrollPane {
+    -fx-hbar-policy: NEVER;
+    -fx-vbar-policy: ALWAYS;
+}
+
+#scaleBarPane {
+    -fx-text-fill: grey;
+    -fx-background-color: white;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10;
+    -fx-border-color: lightgrey;
+    -fx-background-radius: 10;
+}
+
+#invalidRouteLabel {
+    -fx-text-fill: red;
+}
+
+#loadPane, #newLoadPane {
+    -fx-background-color: grey;
+    -fx-border-width: 2px;
+    -fx-border-color: lightgrey;
+}
+
+#loadPaneTitle {
+    -fx-text-fill: white;
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+}
+
+#customMapLabel, #defaultMapLabel {
+    -fx-text-fill: white;
+    -fx-font-size: 14;
+}
+
+#loadingStatusLabel {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+

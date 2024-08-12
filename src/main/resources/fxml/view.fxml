@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import View.*?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Scene fx:id="scene" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Controller">
+   <root>
+      <BorderPane fx:id="borderPane" prefHeight="750.0">
+         <top>
+            <!-- The menubar (file ,toggles etc..)-->
+            <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#loadFileAction" text="Load file" />
+                     </items>
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#saveFileAction" text="Save file" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Toggles">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showKDTree" text="Show KDTree" />
+                        <MenuItem mnemonicParsing="false" onAction="#showDijkstra" text="Show Dijkstra" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Themes">
+                  <items>
+                     <MenuItem mnemonicParsing="false" onAction="#setTheme0" text="Default Theme" />
+                     <MenuItem mnemonicParsing="false" onAction="#setTheme1" text="Google Maps Theme" />
+                     <MenuItem mnemonicParsing="false" onAction="#setTheme2" text="Dark Theme" />
+                  </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+         </top>
+         <left>
+            <VBox fx:id="sidebar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="244.0" prefHeight="802.0" prefWidth="244.0">
+               <!-- Following child contains Routeplanner, from, to, type of transportation and the 'plan route' button-->
+               <children>
+                  <VBox fx:id="VRoutePlanner" minHeight="-Infinity" minWidth="244.0" prefHeight="245.0" prefWidth="244.0">
+                     <children>
+
+                        <Label fx:id="routePlannerLabel" text="Route Planner">
+                           <VBox.margin>
+                              <Insets left="20.0" top="15.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+
+                        <HBox maxHeight="20.0" minWidth="224.0" prefHeight="24.0" prefWidth="224.0">
+                           <VBox.margin>
+                              <Insets left="20.0" top="10.0" />
+                           </VBox.margin>
+                           <TextField fx:id="routeFrom" maxWidth="190.0" minHeight="30" onKeyTyped="#suggestionListHandler" prefHeight="30" prefWidth="190.0" promptText="From:" />
+                           <ImageView fitHeight="36.0" fitWidth="36.0" onMouseClicked="#switchSearchFields" opacity="0.75" pickOnBounds="true" smooth="false" translateY="19.0" StackPane.alignment="CENTER">
+                              <image>
+                                 <Image url="@../InterfaceImages/searchswitch.png" />
+                              </image>
+                              <HBox.margin>
+                                 <Insets left="1.0" />
+                              </HBox.margin>
+                           </ImageView>
+                        </HBox>
+                        <ListView fx:id="routeFromList" managed="false" maxWidth="189.0" onKeyPressed="#handleListViewSelection" onMouseClicked="#handleMouseClickListView" prefHeight="61.0" prefWidth="194.0" visible="false">
+                           <VBox.margin>
+                              <Insets left="20.0" top="-6" />
+                           </VBox.margin>
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                              </FXCollections>
+                           </items>
+                        </ListView>
+
+                        <TextField fx:id="routeTo" layoutX="30.0" layoutY="30.0" maxWidth="188.0" minHeight="30" onKeyTyped="#suggestionListHandler" prefHeight="30" prefWidth="188.0" promptText="To:">
+                           <VBox.margin>
+                              <Insets left="20.0" top="5.0" />
+                           </VBox.margin>
+                        </TextField>
+                        <ListView fx:id="routeToList" managed="false" maxWidth="189.0" onKeyPressed="#handleListViewSelection" onMouseClicked="#handleMouseClickListView" prefHeight="61.0" prefWidth="194.0" visible="false">
+                           <VBox.margin>
+                              <Insets left="20.0" />
+                           </VBox.margin>
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                              </FXCollections>
+                           </items>
+                        </ListView>
+
+                        <ComboBox fx:id="comboBoxTransport" prefWidth="80.0" value="Car" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <items>
+                              <FXCollections fx:id="test" fx:factory="observableArrayList">
+                                 <String fx:value="Car" />
+                                 <String fx:value="Bike" />
+                                 <String fx:value="Walk" />
+                              </FXCollections>
+                           </items>
+                           <VBox.margin>
+                              <Insets left="20.0" top="10.0" />
+                           </VBox.margin>
+                        </ComboBox>
+
+                        <Button fx:id="planRouteButton" layoutX="30.0" layoutY="150.0" maxHeight="32.0" minHeight="32.0" mnemonicParsing="false" onAction="#routeButtonAction" prefHeight="32.0" prefWidth="200.0" text="Plan route">
+                           <VBox.margin>
+                              <Insets left="20.0" top="10.0" />
+                           </VBox.margin>
+                        </Button>
+
+                        <Label fx:id="invalidRouteLabel" visible="false">Cannot compute a valid route
+                           <VBox.margin>
+                              <Insets left="40.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <!--  Following VBox presents the calculated route as a list of directions, for the user to follow-->
+                  <VBox fx:id="directionsVBox" prefHeight="563.0" prefWidth="244.0">
+                     <children>
+
+                        <Label fx:id="directionsLabel" text="Directions">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="5.0" top="40.0" />
+                           </VBox.margin>
+                        </Label>
+
+                        <ScrollPane fx:id="directionsScrollPane" maxWidth="222.0" prefHeight="550.0" prefWidth="220">
+                           <VBox fx:id="VRouteDirections" prefHeight="550.0" prefWidth="220">
+                              <padding>
+                                 <Insets bottom="10.0" right="20.0" top="10.0" />
+                              </padding>
+                              <VBox.margin>
+                                 <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                              </VBox.margin>
+                           </VBox>
+                        </ScrollPane>
+
+                     </children>
+                     <Label fx:id="travelTime" text="Travel time: " />
+                     <Label fx:id="travelDistance" text="Distance: " />
+                  </VBox>
+               </children>
+            </VBox>
+         </left>
+
+
+         <center>
+            <AnchorPane fx:id="mainAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="400.0" prefHeight="802.0" prefWidth="1100.0" BorderPane.alignment="TOP_LEFT">
+               <children>
+                  <!-- The MapCanvas, where the map is drawn upon -->
+                  <MapCanvas id="mapCanvas" fx:id="mapCanvas" height="802.0" layoutX="244.0" onMouseDragged="#setOnMouseDragged" onMouseMoved="#setOnMouseMoved" onMousePressed="#setOnMousePressed" onScroll="#setOnScroll" width="1100.0" AnchorPane.leftAnchor="0.0" />
+
+                  <!-- invisible stackpane that only becomes visible when window width is below 480 (used for enabling / disabling sidebar) -->
+                  <StackPane fx:id="burgerMenuStackPane" layoutX="6.0" layoutY="5.0" managed="false" prefHeight="51.0" prefWidth="50.0" visible="false" AnchorPane.leftAnchor="2.0">
+                     <children>
+                        <ImageView fitHeight="28.0" fitWidth="28.0" onMouseClicked="#openHamburgerMenu" opacity="0.75" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER">
+                           <image>
+                              <Image url="@../InterfaceImages/hamburgermenu.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="9.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                     </children>
+                  </StackPane>
+
+                  <!-- The search pane to search for a specific place, (not route related) -->
+                  <StackPane fx:id="searchPane" layoutX="280.0" layoutY="8.0" prefHeight="57.0" prefWidth="309.0" AnchorPane.leftAnchor="50.0">
+                     <children>
+                        <TextField fx:id="searchField" maxWidth="325.0" onKeyTyped="#suggestionListHandler" prefHeight="32.0" prefWidth="325.0" promptText="Search" StackPane.alignment="TOP_CENTER">
+                           <padding>
+                              <Insets left="5.0" right="40.0" />
+                           </padding>
+                           <StackPane.margin>
+                              <Insets top="10.0" />
+                           </StackPane.margin>
+                        </TextField>
+                        <ListView fx:id="searchPaneList" managed="false" maxWidth="325.0" onKeyPressed="#handleListViewSelection" onMouseClicked="#handleMouseClickListView" prefHeight="61.0" prefWidth="325.0" visible="false">
+                           <VBox.margin>
+                              <Insets left="20.0" top="20.0" />
+                           </VBox.margin>
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                              </FXCollections>
+                           </items>
+                           <StackPane.margin>
+                              <Insets top="40.0" />
+                           </StackPane.margin>
+                        </ListView>
+                        <ImageView fx:id="searchImageView" fitHeight="22.0" fitWidth="24.0" opacity="0.26" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
+                           <image>
+                              <Image url="@../InterfaceImages/searchicon.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets right="10.0" top="15.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                     </children>
+                  </StackPane>
+
+                  <StackPane fx:id="loadPane" layoutX="264.0" layoutY="200.0" prefHeight="261.0" prefWidth="442.0" AnchorPane.leftAnchor="264.0">
+                     <VBox fx:id="loadVBoxContainer" alignment="CENTER">
+                        <Label fx:id="loadPaneTitle" alignment="CENTER">Select from the options below to load a map
+                           <VBox.margin>
+                              <Insets top="15.0" />
+                           </VBox.margin></Label>
+                        <Label fx:id="defaultMapLabel" text="Load one of the default embedded .bin files:">
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin></Label>
+                        <Label text="(requires up to 5gb of ram)">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin></Label>
+                        <HBox fx:id="defaultHBox" alignment="CENTER" prefHeight="45.0" prefWidth="255.0">
+                           <Button fx:id="defaultMapButton" onAction="#loadInitFile" prefWidth="150.0">Load map of Denmark
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </Button>
+                        </HBox>
+                        <Label text="(requires less than 1gb of ram)">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin></Label>
+                        <HBox alignment="CENTER" prefHeight="40.0" prefWidth="255.0">
+                           <Button fx:id="defaultMapButton2" onAction="#loadInitFile" prefWidth="150.0">Load map of Fyn
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </Button>
+                           <Label text="" />
+                        </HBox>
+                        <Label fx:id="customMapLabel" text="Choose your own .osm or .bin file to load:">
+                           <VBox.margin>
+                              <Insets top="15.0" />
+                           </VBox.margin></Label>
+                        <HBox fx:id="customHBox" alignment="CENTER" prefHeight="50.0">
+                           <Button fx:id="customMapButton" onAction="#loadCustomFile" prefWidth="150.0">Load custom file
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </Button>
+                        </HBox>
+                        <HBox fx:id="loadingStatusHBox" alignment="CENTER" managed="false" visible="false">
+                           <ImageView fx:id="loadingStatusImage" fitHeight="32.0" fitWidth="32.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../InterfaceImages/loadicon.png" />
+                              </image>
+                           </ImageView>
+                           <Label fx:id="loadingStatusLabel" text="Loading..." />
+                        </HBox>
+                     </VBox>
+                  </StackPane>
+
+                  <!-- Stackpane for point of interest box -->
+                  <StackPane fx:id="POIPane" layoutX="663.0" layoutY="564.0" prefHeight="42.0" prefWidth="200.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="7.0">
+                     <Button fx:id="POIButton" alignment="CENTER" mnemonicParsing="false" onAction="#openPOIList" prefHeight="28.0" prefWidth="100.0" text="POIs" StackPane.alignment="TOP_CENTER">
+                        <StackPane.margin>
+                           <Insets left="40.0" top="12.0" />
+                        </StackPane.margin></Button>
+
+                        <ListView fx:id="POIListView" layoutX="30.0" layoutY="200.0" managed="false" maxWidth="325.0" onMouseClicked="#handleMouseClickListViewPOI" prefHeight="207.0" prefWidth="200.0">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                              </FXCollections>
+                           </items>
+                           <StackPane.margin>
+                              <Insets left="40.0" top="40.0" />
+                           </StackPane.margin>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </ListView>
+                        <StackPane.margin>
+                           <Insets top="40.0" />
+                        </StackPane.margin>
+                     <StackPane.margin>
+                        <Insets top="10.0" />
+                     </StackPane.margin>
+                  </StackPane>
+
+                  <!-- stackpane for scale bar & street indicator for mouse hovering -->
+                  <StackPane fx:id="scaleBarPane" prefHeight="71.0" prefWidth="250.0" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="25.0">
+                     <VBox fx:id="scaleBarVBox" alignment="BOTTOM_CENTER" minHeight="20.0" prefHeight="31.0" prefWidth="259.0">
+                        <StackPane.margin>
+                           <Insets bottom="40.0" />
+                        </StackPane.margin>
+                        <Label fx:id="scalebarLabel" />
+                        <HBox alignment="CENTER">
+                           <ImageView fitHeight="8.0" fitWidth="2" pickOnBounds="true" StackPane.alignment="CENTER">
+                              <Image url="@../InterfaceImages/scalebarleft.png" />
+
+                              <StackPane.margin>
+                                 <Insets top="9.0" />
+                              </StackPane.margin>
+                              <HBox.margin>
+                                 <Insets bottom="2.0" />
+                              </HBox.margin>
+                           </ImageView>
+                           <ImageView fx:id="scalebarImage" fitHeight="8.0" fitWidth="100.0" pickOnBounds="true" StackPane.alignment="CENTER">
+                              <Image url="@../InterfaceImages/scalebarmid.png" />
+
+                              <StackPane.margin>
+                                 <Insets top="9.0" />
+                              </StackPane.margin>
+                              <HBox.margin>
+                                 <Insets bottom="2.0" />
+                              </HBox.margin>
+                           </ImageView>
+                           <ImageView fitHeight="8.0" fitWidth="2" pickOnBounds="true" StackPane.alignment="CENTER">
+                              <Image url="@../InterfaceImages/scalebarright.png" />
+
+                              <StackPane.margin>
+                                 <Insets top="9.0" />
+                              </StackPane.margin>
+                              <HBox.margin>
+                                 <Insets bottom="2.0" />
+                              </HBox.margin>
+                           </ImageView>
+                        </HBox>
+                     </VBox>
+                     <HBox fx:id="scaleBarTextHBox" prefHeight="47.0" prefWidth="250.0">
+                        <StackPane.margin>
+                           <Insets left="7.0" top="30.0" />
+                        </StackPane.margin>
+                        <TextFlow prefHeight="40.0" prefWidth="234.0">
+                           <Label fx:id="closestHighwayLabel" prefHeight="17.0" prefWidth="233.0" wrapText="true">Closest highway:</Label>
+
+                           <Label fx:id="mouseCoordinatesLabel" prefHeight="17.0" prefWidth="232.0" wrapText="true">Mouse lon <!-- &amp; --> lat:</Label>
+                        </TextFlow>
+                     </HBox>
+                  </StackPane>
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
+   </root>
+</Scene>

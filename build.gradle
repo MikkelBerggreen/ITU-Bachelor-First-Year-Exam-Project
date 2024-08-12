@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+
+    id 'application'
+
+    id 'jacoco'
+
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+
+javafx {
+    version = "14"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // Use JUnit Jupiter Engine for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+    // Allow for JUnit 4 legacy
+    testCompileOnly 'junit:junit:4.12'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.5.1'
+    // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
+    compile group: 'org.controlsfx', name: 'controlsfx', version: '8.0.5'
+
+}
+
+application {
+    mainClassName = 'View.Main'
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClassName
+    }
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+run {
+    jvmArgs '-Xmx8G'
+}
